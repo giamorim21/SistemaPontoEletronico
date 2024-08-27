@@ -1,11 +1,12 @@
 const diaSemana = document.getElementById("dia-semana");
-const diaMesAno = document.getElementById("dia-mes-ano");
-const diaMesAnoUS = document.getElementById("dia-mes-ano-us"); 
+const diaMesAno = document.getElementById("dia-mes-ano"); 
 const horaMinSeg = document.getElementById("hora-min-seg");
+
+const btnBaterPonto = document.getElementById("btn-bater-ponto");
+btnBaterPonto.addEventListener("click", register);
 
 diaSemana.textContent = getWeekDay();
 diaMesAno.textContent = getCurrentDate();
-diaMesAnoUS.textContent = getCurrentDateUS(); 
 horaMinSeg.textContent = getCurrentTime();
 
 function getWeekDay() {
@@ -19,14 +20,17 @@ function getCurrentDate() {
     return date.getDate() + "/" + (date.getMonth() + 1) + "/" + date.getFullYear();
 }
 
-function getCurrentDateUS() {
-    const date = new Date();
-    return (date.getMonth() + 1) + "/" + date.getDate() + "/" + date.getFullYear();
-}
-
 function getCurrentTime() {
     const date = new Date();
     return date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds();
 }
 
-setInterval(getCurrentTime, 1000);
+function printCurrentHour() {
+    horaMinSeg.textContent = getCurrentTime();
+}
+
+function register() {
+    alert("Ponto batido com sucesso!");
+}
+
+setInterval(printCurrentHour, 1000);
