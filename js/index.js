@@ -1,24 +1,4 @@
-const diaSemana = document.getElementById("dia-semana");
-const diaMesAno = document.getElementById("dia-mes-ano"); 
-const horaMinSeg = document.getElementById("hora-min-seg");
-
-const btnBaterPonto = document.getElementById("btn-bater-ponto");
-const dialogPonto = document.getElementById("dialog-ponto");
-
-btnBaterPonto.addEventListener("click", function() {
-    dialogPonto.showModal();
-});
-
-
-const btnDialogFechar = document.getElementById("btn-dialog-fechar");
-btnDialogFechar.addEventListener("click", () => {
-    dialogPonto.close();
-});
-
-diaSemana.textContent = getWeekDay();
-diaMesAno.textContent = getCurrentDate();
-horaMinSeg.textContent = getCurrentTime();
-
+// Declaração de funções
 function getWeekDay() {
     const date = new Date();
     let days = ["Domingo", "Segunda-feira", "Terça-feira", "Quarta-feira", "Quinta-feira", "Sexta-feira", "Sábado"];
@@ -26,11 +6,26 @@ function getWeekDay() {
 }
 
 function getCurrentDate() {
-    // Alterar a solução para considerar padStart ou slice
-    // Considerar formatos diferentes da data, conforme localização
-    // 
     const date = new Date();
-    return date.getDate() + "/" + (date.getMonth() + 1) + "/" + date.getFullYear();
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const year = date.getFullYear();
+
+    const locale = navigator.language;
+
+    let formattedDate;
+    switch (locale) {
+        case 'en-US':
+            formattedDate = `${month}/${day}/${year}`;
+            break;
+        case 'ja-JP':
+            formattedDate = `${year}.${month}.${day}`;
+            break;
+        default:
+            formattedDate = `${day}/${month}/${year}`;
+    }
+
+    return formattedDate;
 }
 
 function getCurrentTime() {
@@ -45,4 +40,35 @@ function printCurrentHour() {
     horaMinSeg.textContent = getCurrentTime();
 }
 
+// Referências de elementos DOM
+const diaSemana = document.getElementById("dia-semana");
+const diaMesAno = document.getElementById("dia-mes-ano"); 
+const horaMinSeg = document.getElementById("hora-min-seg");
+
+const btnBaterPonto = document.getElementById("btn-bater-ponto");
+const dialogPonto = document.getElementById("dialog-ponto");
+
+const btnDialogFechar = document.getElementById("btn-dialog-fechar");
+
+const dialogData = document.getElementById("dialog-data");
+const dialogHora = document.getElementById("dialog-hora");
+
+// Ouvintes de eventos
+btnBaterPonto.addEventListener("click", function() {
+    dialogPonto.showModal();
+});
+
+btnDialogFechar.addEventListener("click", () => {
+    dialogPonto.close();
+});
+
+// Configuração incial
+dialogData.textContent = "Data: " + getCurrentDate();
+dialogHora.textContent = "Hora: " + getCurrentTime();
+
+diaSemana.textContent = getWeekDay();
+diaMesAno.textContent = getCurrentDate();
+horaMinSeg.textContent = getCurrentTime();
+
+// Inicia o intervalo para atualiza a hoa a cada segundo 
 setInterval(printCurrentHour, 1000);

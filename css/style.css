@@ -2,7 +2,10 @@
     text-align: center;
 }
 
-
+#btn-bater-ponto {
+    display: block;
+    margin: 0 auto;
+}
 
 #btn-dialog-fechar {
     position: absolute;
