@@ -50,6 +50,8 @@ const dialogPonto = document.getElementById("dialog-ponto");
 
 const btnDialogFechar = document.getElementById("btn-dialog-fechar");
 
+const btnDialogBaterPonto = document.getElementById("btn-dialog-bater-ponto");
+
 const dialogData = document.getElementById("dialog-data");
 const dialogHora = document.getElementById("dialog-hora");
 
@@ -60,6 +62,28 @@ btnBaterPonto.addEventListener("click", function() {
 
 btnDialogFechar.addEventListener("click", () => {
     dialogPonto.close();
+});
+
+btnDialogBaterPonto.addEventListener("click", () => {
+    const tipoSelect = document.getElementById("tipos-ponto");
+
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition((position) => {
+            let info = {
+                data: getCurrentDate(),
+                hora: getCurrentTime(),
+                tipo: tipoSelect.options[tipoSelect.selectedIndex].value,
+                localizacao: {
+                    latitude: position.coords.latitude,
+                    longitude: position.coords.longitude
+                }
+            };
+
+            console.log(info); // Para fins de depuração
+        });
+    } else {
+        console.log("Geolocalização não é suportada por este navegador.");
+    }
 });
 
 // Configuração incial

@@ -17,10 +17,13 @@
         <!-- Conteúdo do modal de ponto -->
         <p id="dialog-data"></p>
         <p id="dialog-hora"></p>
-        <button>Entrada</button>
-        <button>Intervalo</button>
-        <button>Volta  Intervalo</button>
-        <button>Saída</button>
+        <select name="tipos-ponto" id="tipos-ponto">
+            <option value="entrada">Entrada</option>
+            <option value="intervalo">Intervalo</option>
+            <option value="volta-intervalo">Volta Intervalo</option>
+            <option value="saida">Saída</option>
+        </select>
+        <button id="btn-dialog-bater-ponto">Registrar Ponto</button>
         <button id="btn-dialog-fechar">X</button>
     </dialog>
     <!-- criar histórico dos ultimos n registros -->

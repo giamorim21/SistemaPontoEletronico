@@ -1,3 +1,9 @@
+body {
+    background-image: url(../imagens/imagem.jpg);
+    background-size: cover;
+    background-repeat: no-repeat;
+}
+
 .data-hora {
     text-align: center;
 }
