@@ -1,11 +1,21 @@
 body {
-    background-image: url(../imagens/imagem.jpg);
-    background-size: cover;
+    background-image: url(../imagens/imagem2.jpg);
     background-repeat: no-repeat;
+    background-size: cover;
+    background-attachment: fixed;
+    font-family: "Montserrat Alternates", sans-serif;
+    font-weight: 400;
+    font-style: normal;
 }
 
 .data-hora {
     text-align: center;
+}
+
+button, select {
+    font-family: "Montserrat Alternates", sans-serif;
+    font-weight: 400;
+    font-style: normal;
 }
 
 #btn-bater-ponto {
@@ -17,4 +27,23 @@ body {
     position: absolute;
     top: 0;
     right: 0;
+}
+
+
+#notification {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    padding: 10px;
+    background-color: rgba(0, 0, 0, 0.5); /* Preto com 50% de opacidade */
+    border-radius: 10px;
+    opacity: 0;
+    transform: translateY(100%);
+    transition: opacity 0.3s, transform 0.3s;
+    color: white;
+}
+
+#notification.show {
+    opacity: 1;
+    transform: translateY(0);
 }

@@ -36,6 +36,23 @@ function getCurrentTime() {
     return `${hours}:${minutes}:${seconds}`;
 }
 
+function saveRegisterLocalStorage(register) {
+    localStorage.setItem("register", register);
+}
+
+function showNotification(message) {
+    const notification = document.getElementById("notification");
+    const notificationContent = document.getElementById("notification-content");
+
+    notificationContent.textContent = message;
+
+    notification.classList.add("show");
+
+    setTimeout(() => {
+        notification.classList.remove("show");
+    }, 3000);
+}
+
 function printCurrentHour() {
     horaMinSeg.textContent = getCurrentTime();
 }
@@ -55,13 +72,17 @@ const btnDialogBaterPonto = document.getElementById("btn-dialog-bater-ponto");
 const dialogData = document.getElementById("dialog-data");
 const dialogHora = document.getElementById("dialog-hora");
 
+let dialogInterval;
+
 // Ouvintes de eventos
 btnBaterPonto.addEventListener("click", function() {
     dialogPonto.showModal();
+
 });
 
 btnDialogFechar.addEventListener("click", () => {
     dialogPonto.close();
+
 });
 
 btnDialogBaterPonto.addEventListener("click", () => {
@@ -72,6 +93,7 @@ btnDialogBaterPonto.addEventListener("click", () => {
             let info = {
                 data: getCurrentDate(),
                 hora: getCurrentTime(),
+                id: 1,
                 tipo: tipoSelect.options[tipoSelect.selectedIndex].value,
                 localizacao: {
                     latitude: position.coords.latitude,
@@ -79,12 +101,25 @@ btnDialogBaterPonto.addEventListener("click", () => {
                 }
             };
 
-            console.log(info); // Para fins de depuração
+            console.log(info); 
+
+            saveRegisterLocalStorage(info);
+            
+            let message = `Ponto batido com sucesso às ${info.hora} no dia ${info.data} no momento ${info.tipo}`;
+            showNotification(message);
+
+            dialogPonto.close();
         });
     } else {
         console.log("Geolocalização não é suportada por este navegador.");
     }
+
 });
+
+// TO-DO:
+// A data e hora do dialog devem ser atualizadas automaticamente
+// a hora a cada segundo e a data sempre 00:00:00
+// o setInterval do dialog em que ser desativadoao fechar o dialog
 
 // Configuração incial
 dialogData.textContent = "Data: " + getCurrentDate();
