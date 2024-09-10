@@ -37,12 +37,25 @@ function getCurrentTime() {
 }
 
 function saveRegisterLocalStorage(register) {
-    localStorage.setItem("register", register);
+
+
+    registerLocalStorage.push(register);
+    localStorage.setItem("register", JSON.stringify(registerLocalStorage));
+}
+function getRegisterLocalStorage() {
+    let registers = localStorage.getItem("register");
+
+    if (!registers) {
+        return [];
+    }
+
+    return JSON.parse(registers);
 }
 
 function showNotification(message) {
     const notification = document.getElementById("notification");
     const notificationContent = document.getElementById("notification-content");
+
 
     notificationContent.textContent = message;
 
@@ -74,6 +87,8 @@ const dialogHora = document.getElementById("dialog-hora");
 
 let dialogInterval;
 
+let registerLocalStorage = getRegisterLocalStorage();
+
 // Ouvintes de eventos
 btnBaterPonto.addEventListener("click", function() {
     dialogPonto.showModal();
@@ -86,7 +101,8 @@ btnDialogFechar.addEventListener("click", () => {
 });
 
 btnDialogBaterPonto.addEventListener("click", () => {
-    const tipoSelect = document.getElementById("tipos-ponto");
+
+    let typeRegister = document.getElementById("tipos-ponto").value;
 
     if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition((position) => {
@@ -94,7 +110,7 @@ btnDialogBaterPonto.addEventListener("click", () => {
                 data: getCurrentDate(),
                 hora: getCurrentTime(),
                 id: 1,
-                tipo: tipoSelect.options[tipoSelect.selectedIndex].value,
+                tipo: typeRegister,
                 localizacao: {
                     latitude: position.coords.latitude,
                     longitude: position.coords.longitude
@@ -104,6 +120,8 @@ btnDialogBaterPonto.addEventListener("click", () => {
             console.log(info); 
 
             saveRegisterLocalStorage(info);
+
+            localStorage.setItem("lastTypeRegister", typeRegister);
             
             let message = `Ponto batido com sucesso às ${info.hora} no dia ${info.data} no momento ${info.tipo}`;
             showNotification(message);
@@ -130,4 +148,11 @@ diaMesAno.textContent = getCurrentDate();
 horaMinSeg.textContent = getCurrentTime();
 
 // Inicia o intervalo para atualiza a hoa a cada segundo 
-setInterval(printCurrentHour, 1000);
+setInterval(() => {
+    printCurrentHour();
+    
+    if (dialogPonto.open) {
+        dialogData.textContent = "Data: " + getCurrentDate();
+        dialogHora.textContent = "Hora: " + getCurrentTime();
+    }
+}, 1000);
