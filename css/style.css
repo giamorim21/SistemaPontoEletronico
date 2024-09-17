@@ -1,22 +1,55 @@
 body {
-    background-image: url(../imagens/imagem2.jpg);
-    background-repeat: no-repeat;
-    background-size: cover;
-    background-attachment: fixed;
-    font-family: "Montserrat Alternates", sans-serif;
-    font-weight: 400;
-    font-style: normal;
+    display: flex;
+    justify-content: center;
+    background-image: url(../imagens/imagem2.jpg); 
+    background-repeat: no-repeat; 
+    background-size: cover; 
+    background-attachment: fixed; 
+    font-family: "Montserrat Alternates", sans-serif; 
+    font-weight: 400; 
+    font-style: normal; 
+    font-size: 1.2em;
 }
 
 .data-hora {
-    text-align: center;
+    align-self: flex-start;
+    text-align: center; 
+    color: white; 
+    background-color: rgba(0, 0, 0, 0.5); /* Preto com 50% de opacidade */ 
+    border-radius: 10px; 
+    padding: 10px; 
+    height: 200px; 
+    width: 500px; 
 }
 
 button, select {
     font-family: "Montserrat Alternates", sans-serif;
     font-weight: 400;
     font-style: normal;
+    font-size: 0.9em;
+    border: none;
+    border-radius: 5px;
 }
+
+#dialog-ponto  {
+    border: none; /* Adiciona uma borda preta ao redor do modal */
+    border-radius: 10px; /* Adiciona uma borda preta */
+    width: 100%; /* Define a largura do modal para 80% da largura da janela */
+    max-width: 500px; /* Define a largura máxima do modal para 900px */
+    padding: 20px; /* Adiciona um preenchimento ao redor do conteúdo do modal */
+    box-sizing: border-box; /* Garante que o preenchimento e a borda estejam incluídos na largura total do modal */
+    background-color: rgba(0, 0, 0, 0.5); /* Preto com 50% de opacidade */ 
+    color: white; /* Define a cor do texto para preto */
+}
+
+#btn-dialog-fechar{
+    margin: 5px;
+    border: none;
+    border-radius: 3px;
+    background-color: transparent;
+    color: white;
+}
+
 
 #btn-bater-ponto {
     display: block;
@@ -47,3 +80,4 @@ button, select {
     opacity: 1;
     transform: translateY(0);
 }
+
