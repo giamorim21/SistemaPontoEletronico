@@ -55,6 +55,29 @@
 
             <button id="enviar-justificativa">Enviar Justificativa</button>
         </div>
+
+        <h2>Adicionar Observação a Registro</h2>
+        <div class="form-observacao-registro">
+            <label for="data-observacao">Data do Registro:</label>
+            <input type="date" id="data-observacao" max="" required>
+
+            <label for="tipo-observacao">Tipo de Registro:</label>
+            <select id="tipo-observacao">
+                <option value="Entrada">Entrada</option>
+                <option value="Saída">Saída</option>
+                <option value="Intervalo">Intervalo</option>
+                <option value="Volta do Intervalo">Volta do Intervalo</option>
+            </select>
+
+            <button id="buscar-registro">Buscar Registro</button>
+
+            <div id="detalhes-registro" style="display: none;">
+                <p id="registro-info"></p>
+                <label for="observacao">Observação:</label>
+                <textarea id="observacao" rows="3" placeholder="Adicione uma observação ao registro"></textarea>
+                <button id="salvar-observacao">Salvar Observação</button>
+            </div>
+        </div>
     </div>
 
     <div id="notification">

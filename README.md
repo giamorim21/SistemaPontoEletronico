@@ -50,8 +50,8 @@ Este é um sistema de controle de ponto que permite aos usuários registrar e ge
 
 ## Criadores
 
-Giovana Amorim Campos
-Izabelle Alencar Nabarrete
-Felipe Madruga Gusmão 
-Murilo Barbosa Cardoso
+**Giovana Amorim Campos**
+**Izabelle Alencar Nabarrete**
+**Felipe Madruga Gusmão**
+**Murilo Barbosa Cardoso**
 

@@ -185,3 +185,58 @@ button:hover {
 .form-justificativa-ausencia button:hover {
     background-color: rgba(252,171,170,255);
 }
+
+.form-observacao-registro {
+    display: flex;
+    flex-direction: column;
+    margin-top: 20px;
+    gap: 10px;
+}
+
+.form-observacao-registro label {
+    font-weight: bold;
+}
+
+.form-observacao-registro input,
+.form-observacao-registro select,
+.form-observacao-registro textarea,
+.form-observacao-registro button {
+    padding: 10px;
+    font-size: 16px;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+    margin-bottom: 10px;
+}
+
+.form-observacao-registro textarea {
+    resize: vertical;
+    min-height: 80px;
+    max-height: 200px;
+    padding: 10px;
+    font-family: 'Montserrat Alternates', sans-serif;
+    font-size: 16px;
+    line-height: 1.5;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.form-observacao-registro button {
+    cursor: pointer;
+    background-color: #FF5733;
+    color: white;
+    border: none;
+    padding: 10px;
+    border-radius: 5px;
+    font-weight: bold;
+    transition: background-color 0.3s;
+}
+
+.form-observacao-registro button:hover {
+    background-color: #e04b2f;
+}
+
+#detalhes-registro p {
+    font-weight: bold;
+    margin-bottom: 5px;
+}

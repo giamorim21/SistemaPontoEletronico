@@ -155,3 +155,63 @@ function enviarJustificativa() {
 document.getElementById("enviar-justificativa").addEventListener("click", enviarJustificativa);
 configurarDataMaxima();
 configurarDataMaximaJustificativa();
+
+// Função para configurar a data máxima nos formulários de observação
+function configurarDataMaximaObservacao() {
+    const dataInput = document.getElementById("data-observacao");
+    dataInput.max = getCurrentDate().split('/').reverse().join('-');
+}
+
+// Função para buscar um registro específico
+function buscarRegistro() {
+    const dataObservacao = document.getElementById("data-observacao").value;
+    const tipoObservacao = document.getElementById("tipo-observacao").value;
+
+    if (!dataObservacao) {
+        showNotification("Por favor, selecione uma data.");
+        return;
+    }
+
+    const registros = getRegisterLocalStorage();
+    const registro = registros.find(reg => reg.data === dataObservacao.split('-').reverse().join('/') && reg.tipo === tipoObservacao);
+
+    if (registro) {
+        document.getElementById("detalhes-registro").style.display = "block";
+        document.getElementById("registro-info").textContent = `Registro de ${tipoObservacao} em ${registro.data} às ${registro.hora}`;
+    } else {
+        showNotification("Registro não encontrado para a data e tipo selecionados.");
+        document.getElementById("detalhes-registro").style.display = "none";
+    }
+}
+
+// Função para salvar observação no registro
+function salvarObservacao() {
+    const dataObservacao = document.getElementById("data-observacao").value;
+    const tipoObservacao = document.getElementById("tipo-observacao").value;
+    const observacao = document.getElementById("observacao").value;
+
+    if (!observacao) {
+        showNotification("Por favor, adicione uma observação.");
+        return;
+    }
+
+    const registros = getRegisterLocalStorage();
+    const registroIndex = registros.findIndex(reg => reg.data === dataObservacao.split('-').reverse().join('/') && reg.tipo === tipoObservacao);
+
+    if (registroIndex !== -1) {
+        registros[registroIndex].observacao = observacao;
+        localStorage.setItem("register", JSON.stringify(registros));
+        showNotification("Observação adicionada com sucesso!");
+        document.getElementById("observacao").value = "";
+        document.getElementById("detalhes-registro").style.display = "none";
+    } else {
+        showNotification("Erro ao salvar a observação. Registro não encontrado.");
+    }
+}
+
+// Eventos de inicialização
+document.getElementById("buscar-registro").addEventListener("click", buscarRegistro);
+document.getElementById("salvar-observacao").addEventListener("click", salvarObservacao);
+configurarDataMaxima();
+configurarDataMaximaJustificativa();
+configurarDataMaximaObservacao();
