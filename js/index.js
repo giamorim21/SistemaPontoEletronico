@@ -57,7 +57,7 @@ function registrarPonto(tipo) {
                     longitude: position.coords.longitude
                 };
                 saveRegisterLocalStorage(registro);
-                showNotification(`Ponto de ${tipo} registrado com sucesso!`);
+                showNotification(`Ponto de ${tipo} registrado com sucesso para ${registro.data} às ${registro.hora}!`);
             },
             error => {
                 showNotification("Erro ao obter localização. Permita o acesso para registrar o ponto.");
