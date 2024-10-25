@@ -1,4 +1,4 @@
-// Declaração de funções
+// Funções auxiliares para obter data e hora
 function getWeekDay() {
     const date = new Date();
     let days = ["Domingo", "Segunda-feira", "Terça-feira", "Quarta-feira", "Quinta-feira", "Sexta-feira", "Sábado"];
@@ -10,22 +10,7 @@ function getCurrentDate() {
     const day = String(date.getDate()).padStart(2, '0');
     const month = String(date.getMonth() + 1).padStart(2, '0');
     const year = date.getFullYear();
-
-    const locale = navigator.language;
-
-    let formattedDate;
-    switch (locale) {
-        case 'en-US':
-            formattedDate = `${month}/${day}/${year}`;
-            break;
-        case 'ja-JP':
-            formattedDate = `${year}.${month}.${day}`;
-            break;
-        default:
-            formattedDate = `${day}/${month}/${year}`;
-    }
-
-    return formattedDate;
+    return `${day}/${month}/${year}`;
 }
 
 function getCurrentTime() {
@@ -36,123 +21,51 @@ function getCurrentTime() {
     return `${hours}:${minutes}:${seconds}`;
 }
 
+// Funções para manipular localStorage
 function saveRegisterLocalStorage(register) {
-
-
+    const registerLocalStorage = getRegisterLocalStorage();
     registerLocalStorage.push(register);
     localStorage.setItem("register", JSON.stringify(registerLocalStorage));
 }
+
 function getRegisterLocalStorage() {
     let registers = localStorage.getItem("register");
-
-    if (!registers) {
-        return [];
-    }
-
-    return JSON.parse(registers);
+    return registers ? JSON.parse(registers) : [];
 }
 
 function showNotification(message) {
     const notification = document.getElementById("notification");
     const notificationContent = document.getElementById("notification-content");
-
-
     notificationContent.textContent = message;
-
     notification.classList.add("show");
-
     setTimeout(() => {
         notification.classList.remove("show");
     }, 3000);
 }
 
-function printCurrentHour() {
-    horaMinSeg.textContent = getCurrentTime();
+// Função principal para registrar ponto
+function registrarPonto(tipo) {
+    const registro = {
+        data: getCurrentDate(),
+        hora: getCurrentTime(),
+        tipo: tipo,
+    };
+    saveRegisterLocalStorage(registro);
+    showNotification(`Ponto de ${tipo} registrado com sucesso!`);
 }
 
-// Referências de elementos DOM
-const diaSemana = document.getElementById("dia-semana");
-const diaMesAno = document.getElementById("dia-mes-ano"); 
-const horaMinSeg = document.getElementById("hora-min-seg");
+// Configuração inicial de data e hora
+function atualizarDataHora() {
+    document.getElementById("dia-semana").textContent = getWeekDay();
+    document.getElementById("dia-mes-ano").textContent = getCurrentDate();
+    document.getElementById("hora-min-seg").textContent = getCurrentTime();
+}
 
-const btnBaterPonto = document.getElementById("btn-bater-ponto");
-const dialogPonto = document.getElementById("dialog-ponto");
+// Atualiza a data e hora a cada segundo
+setInterval(atualizarDataHora, 1000);
 
-const btnDialogFechar = document.getElementById("btn-dialog-fechar");
-
-const btnDialogBaterPonto = document.getElementById("btn-dialog-bater-ponto");
-
-const dialogData = document.getElementById("dialog-data");
-const dialogHora = document.getElementById("dialog-hora");
-
-let dialogInterval;
-
-let registerLocalStorage = getRegisterLocalStorage();
-
-// Ouvintes de eventos
-btnBaterPonto.addEventListener("click", function() {
-    dialogPonto.showModal();
-
-});
-
-btnDialogFechar.addEventListener("click", () => {
-    dialogPonto.close();
-
-});
-
-btnDialogBaterPonto.addEventListener("click", () => {
-
-    let typeRegister = document.getElementById("tipos-ponto").value;
-
-    if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition((position) => {
-            let info = {
-                data: getCurrentDate(),
-                hora: getCurrentTime(),
-                id: 1,
-                tipo: typeRegister,
-                localizacao: {
-                    latitude: position.coords.latitude,
-                    longitude: position.coords.longitude
-                }
-            };
-
-            console.log(info); 
-
-            saveRegisterLocalStorage(info);
-
-            localStorage.setItem("lastTypeRegister", typeRegister);
-            
-            let message = `Ponto batido com sucesso às ${info.hora} no dia ${info.data} no momento ${info.tipo}`;
-            showNotification(message);
-
-            dialogPonto.close();
-        });
-    } else {
-        console.log("Geolocalização não é suportada por este navegador.");
-    }
-
-});
-
-// TO-DO:
-// A data e hora do dialog devem ser atualizadas automaticamente
-// a hora a cada segundo e a data sempre 00:00:00
-// o setInterval do dialog em que ser desativadoao fechar o dialog
-
-// Configuração incial
-dialogData.textContent = "Data: " + getCurrentDate();
-dialogHora.textContent = "Hora: " + getCurrentTime();
-
-diaSemana.textContent = getWeekDay();
-diaMesAno.textContent = getCurrentDate();
-horaMinSeg.textContent = getCurrentTime();
-
-// Inicia o intervalo para atualiza a hoa a cada segundo 
-setInterval(() => {
-    printCurrentHour();
-    
-    if (dialogPonto.open) {
-        dialogData.textContent = "Data: " + getCurrentDate();
-        dialogHora.textContent = "Hora: " + getCurrentTime();
-    }
-}, 1000);
+// Adiciona eventos aos botões de ponto
+document.getElementById("entrada").addEventListener("click", () => registrarPonto("Entrada"));
+document.getElementById("saida").addEventListener("click", () => registrarPonto("Saída"));
+document.getElementById("intervalo").addEventListener("click", () => registrarPonto("Intervalo"));
+document.getElementById("volta-intervalo").addEventListener("click", () => registrarPonto("Volta do Intervalo"));
