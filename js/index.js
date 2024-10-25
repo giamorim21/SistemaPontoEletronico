@@ -1,7 +1,7 @@
 // Funções auxiliares para obter data e hora
 function getWeekDay() {
     const date = new Date();
-    let days = ["Domingo", "Segunda-feira", "Terça-feira", "Quarta-feira", "Quinta-feira", "Sexta-feira", "Sábado"];
+    const days = ["Domingo", "Segunda-feira", "Terça-feira", "Quarta-feira", "Quinta-feira", "Sexta-feira", "Sábado"];
     return days[date.getDay()];
 }
 
@@ -22,15 +22,12 @@ function getCurrentTime() {
 }
 
 // Funções para manipular localStorage
-function saveRegisterLocalStorage(register) {
-    const registerLocalStorage = getRegisterLocalStorage();
-    registerLocalStorage.push(register);
-    localStorage.setItem("register", JSON.stringify(registerLocalStorage));
+function saveToLocalStorage(key, data) {
+    localStorage.setItem(key, JSON.stringify(data));
 }
 
-function getRegisterLocalStorage() {
-    let registers = localStorage.getItem("register");
-    return registers ? JSON.parse(registers) : [];
+function getFromLocalStorage(key) {
+    return JSON.parse(localStorage.getItem(key) || "[]");
 }
 
 function showNotification(message) {
@@ -38,9 +35,7 @@ function showNotification(message) {
     const notificationContent = document.getElementById("notification-content");
     notificationContent.textContent = message;
     notification.classList.add("show");
-    setTimeout(() => {
-        notification.classList.remove("show");
-    }, 3000);
+    setTimeout(() => notification.classList.remove("show"), 3000);
 }
 
 // Função principal para registrar ponto
@@ -50,7 +45,9 @@ function registrarPonto(tipo) {
         hora: getCurrentTime(),
         tipo: tipo,
     };
-    saveRegisterLocalStorage(registro);
+    const registros = getFromLocalStorage("register");
+    registros.push(registro);
+    saveToLocalStorage("register", registros);
     showNotification(`Ponto de ${tipo} registrado com sucesso!`);
 }
 
@@ -61,19 +58,10 @@ function atualizarDataHora() {
     document.getElementById("hora-min-seg").textContent = getCurrentTime();
 }
 
-// Atualiza a data e hora a cada segundo
-setInterval(atualizarDataHora, 1000);
-
-// Adiciona eventos aos botões de ponto
-document.getElementById("entrada").addEventListener("click", () => registrarPonto("Entrada"));
-document.getElementById("saida").addEventListener("click", () => registrarPonto("Saída"));
-document.getElementById("intervalo").addEventListener("click", () => registrarPonto("Intervalo"));
-document.getElementById("volta-intervalo").addEventListener("click", () => registrarPonto("Volta do Intervalo"));
-
-// Função para configurar a data máxima para o registro no passado
-function configurarDataMaxima() {
-    const dataInput = document.getElementById("data-registro");
-    dataInput.max = getCurrentDate().split('/').reverse().join('-');
+// Configura data máxima para campos de entrada
+function configurarDataMaxima(elementId) {
+    const inputElement = document.getElementById(elementId);
+    inputElement.max = getCurrentDate().split('/').reverse().join('-');
 }
 
 // Função para registrar ponto no passado
@@ -83,16 +71,12 @@ function registrarPontoPassado() {
     const tipo = document.getElementById("tipo-registro").value;
 
     if (!data || !hora || !tipo) {
-        showNotification("Por favor, preencha todos os campos!");
-        return;
+        return showNotification("Por favor, preencha todos os campos!");
     }
 
-    const dataAtual = new Date();
     const dataRegistro = new Date(`${data}T${hora}`);
-
-    if (dataRegistro > dataAtual) {
-        showNotification("Não é possível registrar pontos no futuro.");
-        return;
+    if (dataRegistro > new Date()) {
+        return showNotification("Não é possível registrar pontos no futuro.");
     }
 
     const registro = {
@@ -101,78 +85,49 @@ function registrarPontoPassado() {
         tipo: tipo,
     };
 
-    saveRegisterLocalStorage(registro);
+    const registros = getFromLocalStorage("register");
+    registros.push(registro);
+    saveToLocalStorage("register", registros);
     showNotification(`Ponto de ${tipo} registrado com sucesso para ${registro.data} às ${registro.hora}!`);
-}
-
-// Eventos de inicialização
-document.getElementById("registrar-passado").addEventListener("click", registrarPontoPassado);
-configurarDataMaxima();
-
-// Função para configurar a data máxima para o registro de justificativa de ausência
-function configurarDataMaximaJustificativa() {
-    const dataInput = document.getElementById("data-ausencia");
-    dataInput.max = getCurrentDate().split('/').reverse().join('-');
 }
 
 // Função para registrar justificativa de ausência
 function enviarJustificativa() {
     const dataAusencia = document.getElementById("data-ausencia").value;
     const justificativa = document.getElementById("justificativa").value;
-    const arquivoInput = document.getElementById("arquivo-justificativa");
-    const arquivo = arquivoInput.files[0] ? arquivoInput.files[0].name : null;
+    const arquivo = document.getElementById("arquivo-justificativa").files[0]?.name || null;
 
     if (!dataAusencia || !justificativa) {
-        showNotification("Por favor, preencha a data e a justificativa!");
-        return;
+        return showNotification("Por favor, preencha a data e a justificativa!");
     }
 
-    const dataAtual = new Date();
-    const dataRegistro = new Date(dataAusencia);
-
-    if (dataRegistro > dataAtual) {
-        showNotification("Não é possível justificar uma ausência em uma data futura.");
-        return;
+    if (new Date(dataAusencia) > new Date()) {
+        return showNotification("Não é possível justificar uma ausência em uma data futura.");
     }
 
-    const justificativaObj = {
+    const justificativas = getFromLocalStorage("justificativas");
+    justificativas.push({
         dataAusencia: dataAusencia.split('-').reverse().join('/'),
         justificativa: justificativa,
         arquivo: arquivo,
-    };
-
-    const justificativas = JSON.parse(localStorage.getItem("justificativas") || "[]");
-    justificativas.push(justificativaObj);
-    localStorage.setItem("justificativas", JSON.stringify(justificativas));
-
+    });
+    saveToLocalStorage("justificativas", justificativas);
     showNotification("Justificativa de ausência registrada com sucesso!");
     document.getElementById("justificativa").value = "";
     document.getElementById("data-ausencia").value = "";
-    arquivoInput.value = "";
+    document.getElementById("arquivo-justificativa").value = "";
 }
 
-// Eventos de inicialização
-document.getElementById("enviar-justificativa").addEventListener("click", enviarJustificativa);
-configurarDataMaxima();
-configurarDataMaximaJustificativa();
-
-// Função para configurar a data máxima nos formulários de observação
-function configurarDataMaximaObservacao() {
-    const dataInput = document.getElementById("data-observacao");
-    dataInput.max = getCurrentDate().split('/').reverse().join('-');
-}
-
-// Função para buscar um registro específico
+// Função para buscar um registro específico para adicionar observação
 function buscarRegistro() {
     const dataObservacao = document.getElementById("data-observacao").value;
     const tipoObservacao = document.getElementById("tipo-observacao").value;
 
     if (!dataObservacao) {
-        showNotification("Por favor, selecione uma data.");
-        return;
+        return showNotification("Por favor, selecione uma data.");
     }
 
-    const registros = getRegisterLocalStorage();
+    const registros = getFromLocalStorage("register");
     const registro = registros.find(reg => reg.data === dataObservacao.split('-').reverse().join('/') && reg.tipo === tipoObservacao);
 
     if (registro) {
@@ -191,16 +146,15 @@ function salvarObservacao() {
     const observacao = document.getElementById("observacao").value;
 
     if (!observacao) {
-        showNotification("Por favor, adicione uma observação.");
-        return;
+        return showNotification("Por favor, adicione uma observação.");
     }
 
-    const registros = getRegisterLocalStorage();
+    const registros = getFromLocalStorage("register");
     const registroIndex = registros.findIndex(reg => reg.data === dataObservacao.split('-').reverse().join('/') && reg.tipo === tipoObservacao);
 
     if (registroIndex !== -1) {
         registros[registroIndex].observacao = observacao;
-        localStorage.setItem("register", JSON.stringify(registros));
+        saveToLocalStorage("register", registros);
         showNotification("Observação adicionada com sucesso!");
         document.getElementById("observacao").value = "";
         document.getElementById("detalhes-registro").style.display = "none";
@@ -209,9 +163,23 @@ function salvarObservacao() {
     }
 }
 
-// Eventos de inicialização
-document.getElementById("buscar-registro").addEventListener("click", buscarRegistro);
-document.getElementById("salvar-observacao").addEventListener("click", salvarObservacao);
-configurarDataMaxima();
-configurarDataMaximaJustificativa();
-configurarDataMaximaObservacao();
+// Inicialização de eventos
+function inicializarEventos() {
+    document.getElementById("entrada").addEventListener("click", () => registrarPonto("Entrada"));
+    document.getElementById("saida").addEventListener("click", () => registrarPonto("Saída"));
+    document.getElementById("intervalo").addEventListener("click", () => registrarPonto("Intervalo"));
+    document.getElementById("volta-intervalo").addEventListener("click", () => registrarPonto("Volta do Intervalo"));
+
+    document.getElementById("registrar-passado").addEventListener("click", registrarPontoPassado);
+    document.getElementById("enviar-justificativa").addEventListener("click", enviarJustificativa);
+    document.getElementById("buscar-registro").addEventListener("click", buscarRegistro);
+    document.getElementById("salvar-observacao").addEventListener("click", salvarObservacao);
+
+    configurarDataMaxima("data-registro");
+    configurarDataMaxima("data-ausencia");
+    configurarDataMaxima("data-observacao");
+}
+
+// Inicia atualização de data e hora e configuração de eventos
+setInterval(atualizarDataHora, 1000);
+inicializarEventos();
