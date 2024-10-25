@@ -108,3 +108,50 @@ function registrarPontoPassado() {
 // Eventos de inicialização
 document.getElementById("registrar-passado").addEventListener("click", registrarPontoPassado);
 configurarDataMaxima();
+
+// Função para configurar a data máxima para o registro de justificativa de ausência
+function configurarDataMaximaJustificativa() {
+    const dataInput = document.getElementById("data-ausencia");
+    dataInput.max = getCurrentDate().split('/').reverse().join('-');
+}
+
+// Função para registrar justificativa de ausência
+function enviarJustificativa() {
+    const dataAusencia = document.getElementById("data-ausencia").value;
+    const justificativa = document.getElementById("justificativa").value;
+    const arquivoInput = document.getElementById("arquivo-justificativa");
+    const arquivo = arquivoInput.files[0] ? arquivoInput.files[0].name : null;
+
+    if (!dataAusencia || !justificativa) {
+        showNotification("Por favor, preencha a data e a justificativa!");
+        return;
+    }
+
+    const dataAtual = new Date();
+    const dataRegistro = new Date(dataAusencia);
+
+    if (dataRegistro > dataAtual) {
+        showNotification("Não é possível justificar uma ausência em uma data futura.");
+        return;
+    }
+
+    const justificativaObj = {
+        dataAusencia: dataAusencia.split('-').reverse().join('/'),
+        justificativa: justificativa,
+        arquivo: arquivo,
+    };
+
+    const justificativas = JSON.parse(localStorage.getItem("justificativas") || "[]");
+    justificativas.push(justificativaObj);
+    localStorage.setItem("justificativas", JSON.stringify(justificativas));
+
+    showNotification("Justificativa de ausência registrada com sucesso!");
+    document.getElementById("justificativa").value = "";
+    document.getElementById("data-ausencia").value = "";
+    arquivoInput.value = "";
+}
+
+// Eventos de inicialização
+document.getElementById("enviar-justificativa").addEventListener("click", enviarJustificativa);
+configurarDataMaxima();
+configurarDataMaximaJustificativa();
