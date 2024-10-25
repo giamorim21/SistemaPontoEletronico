@@ -48,7 +48,10 @@ Este é um sistema de controle de ponto que permite aos usuários registrar e ge
 4. Push para o branch: `git push origin minha-feature`.
 5. Abra um Pull Request.
 
-## Licença
+## Criadores
 
-Este projeto está sob a licença [Nome da Licença].
+Giovana Amorim Campos
+Izabelle Alencar Nabarrete
+Felipe Madruga Gusmão 
+Murilo Barbosa Cardoso
 
