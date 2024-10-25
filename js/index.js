@@ -69,3 +69,42 @@ document.getElementById("entrada").addEventListener("click", () => registrarPont
 document.getElementById("saida").addEventListener("click", () => registrarPonto("Saída"));
 document.getElementById("intervalo").addEventListener("click", () => registrarPonto("Intervalo"));
 document.getElementById("volta-intervalo").addEventListener("click", () => registrarPonto("Volta do Intervalo"));
+
+// Função para configurar a data máxima para o registro no passado
+function configurarDataMaxima() {
+    const dataInput = document.getElementById("data-registro");
+    dataInput.max = getCurrentDate().split('/').reverse().join('-');
+}
+
+// Função para registrar ponto no passado
+function registrarPontoPassado() {
+    const data = document.getElementById("data-registro").value;
+    const hora = document.getElementById("hora-registro").value;
+    const tipo = document.getElementById("tipo-registro").value;
+
+    if (!data || !hora || !tipo) {
+        showNotification("Por favor, preencha todos os campos!");
+        return;
+    }
+
+    const dataAtual = new Date();
+    const dataRegistro = new Date(`${data}T${hora}`);
+
+    if (dataRegistro > dataAtual) {
+        showNotification("Não é possível registrar pontos no futuro.");
+        return;
+    }
+
+    const registro = {
+        data: data.split('-').reverse().join('/'),
+        hora: hora,
+        tipo: tipo,
+    };
+
+    saveRegisterLocalStorage(registro);
+    showNotification(`Ponto de ${tipo} registrado com sucesso para ${registro.data} às ${registro.hora}!`);
+}
+
+// Eventos de inicialização
+document.getElementById("registrar-passado").addEventListener("click", registrarPontoPassado);
+configurarDataMaxima();

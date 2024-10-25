@@ -25,6 +25,22 @@
         </div>
 
         <h2>Registrar Pontos no Passado</h2>
+        <div class="form-ponto-passado">
+            <label for="data-registro">Data:</label>
+            <input type="date" id="data-registro" max="" required>
+
+            <label for="hora-registro">Hora:</label>
+            <input type="time" id="hora-registro" required>
+
+            <label for="tipo-registro">Tipo de Registro:</label>
+            <select id="tipo-registro">
+                <option value="Entrada">Entrada</option>
+                <option value="Saída">Saída</option>
+                <option value="Intervalo">Intervalo</option>
+                <option value="Volta do Intervalo">Volta do Intervalo</option>
+            </select>
+            <button id="registrar-passado">Registrar</button>
+        </div>
     </div>
 
     <div id="notification">
