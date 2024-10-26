@@ -26,16 +26,10 @@ function getJustificativasLocalStorage() {
     return justificativas ? JSON.parse(justificativas) : [];
 }
 
-// Função para agrupar registros por data
-function groupRecordsByDate(records) {
-    return records.reduce((grouped, record) => {
-        const date = record.data;
-        if (!grouped[date]) {
-            grouped[date] = [];
-        }
-        grouped[date].push(record);
-        return grouped;
-    }, {});
+// Função para converter data no formato "dd/mm/aaaa" em objeto Date
+function parseDate(dateStr) {
+    const [day, month, year] = dateStr.split('/');
+    return new Date(year, month - 1, day);
 }
 
 // Função para filtrar registros por período
@@ -56,14 +50,41 @@ function filterRecordsByPeriod(records, period) {
             const recordDate = parseDate(record.data);
             return recordDate >= oneMonthAgo && recordDate <= now;
         });
+    } else if (period === 'custom') {
+        const startDateInput = document.getElementById("start-date").value;
+        const endDateInput = document.getElementById("end-date").value;
+        if (startDateInput && endDateInput) {
+            const startDate = new Date(startDateInput);
+            const endDate = new Date(endDateInput);
+            if (startDate > endDate) {
+                showNotification("A data inicial não pode ser posterior à data final.");
+                filteredRecords = [];
+            } else {
+                // Ajuste para incluir o dia final completo
+                endDate.setHours(23, 59, 59, 999);
+                filteredRecords = records.filter(record => {
+                    const recordDate = parseDate(record.data);
+                    return recordDate >= startDate && recordDate <= endDate;
+                });
+            }
+        } else {
+            // Se as datas não forem selecionadas, não filtramos e exibimos todos os registros
+            filteredRecords = [];
+        }
     }
     return filteredRecords;
 }
 
-// Função para converter data no formato "dd/mm/aaaa" em objeto Date
-function parseDate(dateStr) {
-    const [day, month, year] = dateStr.split('/');
-    return new Date(year, month - 1, day);
+// Função para agrupar registros por data
+function groupRecordsByDate(records) {
+    return records.reduce((grouped, record) => {
+        const date = record.data;
+        if (!grouped[date]) {
+            grouped[date] = [];
+        }
+        grouped[date].push(record);
+        return grouped;
+    }, {});
 }
 
 // Função para renderizar os registros na página
@@ -75,6 +96,15 @@ function renderRecords() {
 
     const reportContainer = document.getElementById("report-container");
     reportContainer.innerHTML = '';
+
+    if (filterPeriod === 'custom') {
+        const startDateInput = document.getElementById("start-date").value;
+        const endDateInput = document.getElementById("end-date").value;
+        if (!startDateInput || !endDateInput) {
+            reportContainer.innerHTML = '<p>Por favor, selecione a data inicial e a data final.</p>';
+            return;
+        }
+    }
 
     if (Object.keys(groupedRecords).length === 0) {
         reportContainer.innerHTML = '<p>Nenhum registro encontrado para o período selecionado.</p>';
@@ -140,6 +170,17 @@ function renderRecords() {
     }
 }
 
+// Função para mostrar ou esconder campos de data personalizada
+function toggleCustomDateFields() {
+    const filterPeriod = document.getElementById("filter-period").value;
+    const customDateRange = document.getElementById("custom-date-range");
+    if (filterPeriod === 'custom') {
+        customDateRange.style.display = 'flex';
+    } else {
+        customDateRange.style.display = 'none';
+    }
+}
+
 // Função para renderizar as justificativas na página
 function renderJustificativas() {
     const justificativas = getJustificativasLocalStorage();
@@ -163,10 +204,23 @@ function renderJustificativas() {
         descricaoP.innerHTML = `<strong>Justificativa:</strong> ${justificativa.justificativa}`;
         justificativaDiv.appendChild(descricaoP);
 
-        if (justificativa.arquivo) {
-            const arquivoP = document.createElement('p');
-            arquivoP.innerHTML = `<strong>Arquivo Anexado:</strong> ${justificativa.arquivo}`;
-            justificativaDiv.appendChild(arquivoP);
+        if (justificativa.conteudoArquivo) {
+            // Verificar o tipo de arquivo
+            if (justificativa.conteudoArquivo.startsWith('data:image/')) {
+                // Se for uma imagem, exibir a imagem
+                const imagem = document.createElement('img');
+                imagem.src = justificativa.conteudoArquivo;
+                imagem.alt = justificativa.nomeArquivo;
+                imagem.style.maxWidth = '200px';
+                justificativaDiv.appendChild(imagem);
+            } else {
+                // Se não for imagem, fornecer link para download
+                const link = document.createElement('a');
+                link.href = justificativa.conteudoArquivo;
+                link.download = justificativa.nomeArquivo;
+                link.textContent = `Baixar ${justificativa.nomeArquivo}`;
+                justificativaDiv.appendChild(link);
+            }
         }
 
         justificativasContainer.appendChild(justificativaDiv);
@@ -212,11 +266,19 @@ function deleteRecord() {
 function initialize() {
     renderRecords();
     renderJustificativas();
-    document.getElementById("filter-period").addEventListener('change', renderRecords);
+    toggleCustomDateFields();
+    document.getElementById("filter-period").addEventListener('change', () => {
+        toggleCustomDateFields();
+        renderRecords();
+    });
+
+    // Adicionar event listeners para os campos de data personalizada
+    document.getElementById("start-date").addEventListener('change', renderRecords);
+    document.getElementById("end-date").addEventListener('change', renderRecords);
 
     // Evento para o botão "Voltar"
     document.getElementById("voltar").addEventListener("click", () => {
-        window.location.href = "index.html";
+        window.location.href = "../index.html";
     });
 }
 

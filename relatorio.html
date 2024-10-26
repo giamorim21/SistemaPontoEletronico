@@ -6,6 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Relatório de Pontos</title>
     <link rel="stylesheet" href="../css/relatorio.css">
+    <!-- Fonte Montserrat Alternates -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat+Alternates:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
     <div class="container">
@@ -17,7 +19,19 @@
                 <option value="all">Todos os registros</option>
                 <option value="last-week">Última semana</option>
                 <option value="last-month">Último mês</option>
+                <option value="custom">Personalizado</option>
             </select>
+            <!-- Campos para o intervalo de datas personalizado -->
+            <div id="custom-date-range" style="display: none;">
+                <div class="custom-date-field">
+                    <label for="start-date">Data Inicial:</label>
+                    <input type="date" id="start-date">
+                </div>
+                <div class="custom-date-field">
+                    <label for="end-date">Data Final:</label>
+                    <input type="date" id="end-date">
+                </div>
+            </div>
         </div>
         <!-- Contêiner para os registros de ponto -->
         <div id="report-container">

@@ -1,12 +1,11 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-br">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="css/style.css">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat+Alternates:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900&display=swap" rel="stylesheet">
     <title>Sistema de Controle de Ponto</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat+Alternates:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
     <div class="container">
@@ -17,6 +16,7 @@
             <p id="hora-min-seg"></p>
         </div>
 
+        <!-- Seção de botões principais -->
         <div class="botoes">
             <button id="entrada">Entrada</button>
             <button id="saida">Saída</button>
@@ -24,71 +24,68 @@
             <button id="volta-intervalo">Volta do Intervalo</button>
         </div>
 
-        <div class="botao-relatorio">
+        <!-- Botão "Ver Relatório" -->
+        <div class="botoes">
             <button id="ver-relatorio">Ver Relatório</button>
         </div>
-        
+
+        <!-- Formulário de registro de ponto no passado -->
         <h2>Registrar Pontos no Passado</h2>
-        <div class="form-ponto-passado">
-            <label for="data-registro">Data:</label>
-            <input type="date" id="data-registro" max="" required>
+        <form id="form-ponto-passado" class="form-ponto-passado">
+            <label for="data-ponto">Data:</label>
+            <input type="date" id="data-ponto" required>
 
-            <label for="hora-registro">Hora:</label>
-            <input type="time" id="hora-registro" required>
+            <label for="hora-ponto">Hora:</label>
+            <input type="time" id="hora-ponto" required>
 
-            <label for="tipo-registro">Tipo de Registro:</label>
-            <select id="tipo-registro">
+            <label for="tipo-ponto">Tipo:</label>
+            <select id="tipo-ponto" required>
+                <option value="">Selecione</option>
                 <option value="Entrada">Entrada</option>
                 <option value="Saída">Saída</option>
                 <option value="Intervalo">Intervalo</option>
                 <option value="Volta do Intervalo">Volta do Intervalo</option>
             </select>
-            <button id="registrar-passado">Registrar</button>
-        </div>
 
+            <button type="submit">Registrar</button>
+        </form>
+
+        <!-- Formulário de justificativa de ausência -->
         <h2>Justificar Ausência</h2>
-        <div class="form-justificativa-ausencia">
+        <form id="form-justificativa" class="form-justificativa-ausencia">
             <label for="data-ausencia">Data da Ausência:</label>
-            <input type="date" id="data-ausencia" max="" required>
+            <input type="date" id="data-ausencia" required>
 
-            <label for="justificativa">Justificativa:</label>
-            <textarea id="justificativa" rows="4" placeholder="Descreva o motivo da ausência"></textarea>
+            <label for="justificativa-texto">Justificativa:</label>
+            <textarea id="justificativa-texto" required></textarea>
 
-            <label for="arquivo-justificativa">Anexar Arquivo (opcional):</label>
-            <input type="file" id="arquivo-justificativa">
+            <label for="arquivo-anexo">Anexar Arquivo (opcional):</label>
+            <input type="file" id="arquivo-anexo">
 
-            <button id="enviar-justificativa">Enviar Justificativa</button>
-        </div>
+            <button type="submit">Enviar Justificativa</button>
+        </form>
 
+        <!-- Formulário de adição de observação -->
         <h2>Adicionar Observação a Registro</h2>
-        <div class="form-observacao-registro">
+        <form id="form-observacao" class="form-observacao-registro">
             <label for="data-observacao">Data do Registro:</label>
-            <input type="date" id="data-observacao" max="" required>
+            <input type="date" id="data-observacao" required>
 
-            <label for="tipo-observacao">Tipo de Registro:</label>
-            <select id="tipo-observacao">
-                <option value="Entrada">Entrada</option>
-                <option value="Saída">Saída</option>
-                <option value="Intervalo">Intervalo</option>
-                <option value="Volta do Intervalo">Volta do Intervalo</option>
-            </select>
+            <label for="hora-observacao">Hora do Registro:</label>
+            <input type="time" id="hora-observacao" required>
 
-            <button id="buscar-registro">Buscar Registro</button>
+            <label for="observacao-texto">Observação:</label>
+            <textarea id="observacao-texto" required></textarea>
 
-            <div id="detalhes-registro" style="display: none;">
-                <p id="registro-info"></p>
-                <label for="observacao">Observação:</label>
-                <textarea id="observacao" rows="3" placeholder="Adicione uma observação ao registro"></textarea>
-                <button id="salvar-observacao">Salvar Observação</button>
-            </div>
-        </div>
+            <button type="submit">Adicionar Observação</button>
+        </form>
+
     </div>
 
+    <!-- Notificações e scripts -->
     <div id="notification">
         <p id="notification-content"></p>
     </div>
-
     <script src="js/index.js"></script>
-    
 </body>
 </html>

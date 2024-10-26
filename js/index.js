@@ -1,40 +1,11 @@
-// Funções auxiliares para obter data e hora
-function getWeekDay() {
-    const date = new Date();
-    const days = ["Domingo", "Segunda-feira", "Terça-feira", "Quarta-feira", "Quinta-feira", "Sexta-feira", "Sábado"];
-    return days[date.getDay()];
-}
-
-function getCurrentDate() {
-    const date = new Date();
-    const day = String(date.getDate()).padStart(2, '0');
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const year = date.getFullYear();
-    return `${day}/${month}/${year}`;
-}
-
-function getCurrentTime() {
-    const date = new Date();
-    const hours = String(date.getHours()).padStart(2, '0');
-    const minutes = String(date.getMinutes()).padStart(2, '0');
-    const seconds = String(date.getSeconds()).padStart(2, '0');
-    return `${hours}:${minutes}:${seconds}`;
-}
-
-document.getElementById("ver-relatorio").addEventListener("click", () => {
-    window.location.href = "relatorio.html";
-});
-
-// Funções para manipular localStorage
-function saveRegisterLocalStorage(register) {
-    const registerLocalStorage = getRegisterLocalStorage();
-    registerLocalStorage.push(register);
-    localStorage.setItem("register", JSON.stringify(registerLocalStorage));
-}
-
+// Funções para obter e salvar registros no localStorage
 function getRegisterLocalStorage() {
     const registers = localStorage.getItem("register");
     return registers ? JSON.parse(registers) : [];
+}
+
+function saveRegisterLocalStorage(registers) {
+    localStorage.setItem("register", JSON.stringify(registers));
 }
 
 // Função para exibir notificações
@@ -48,171 +19,166 @@ function showNotification(message) {
     }, 3000);
 }
 
-// Função principal para registrar ponto com geolocalização
+// Função para formatar data e hora
+function formatDateTime(date) {
+    const diaSemana = date.toLocaleDateString('pt-BR', { weekday: 'long' });
+    const diaMesAno = date.toLocaleDateString('pt-BR');
+    const horaMinSeg = date.toLocaleTimeString('pt-BR');
+    return { diaSemana, diaMesAno, horaMinSeg };
+}
+
+// Atualizar data e hora na tela
+function updateDateTime() {
+    const now = new Date();
+    const { diaSemana, diaMesAno, horaMinSeg } = formatDateTime(now);
+    document.getElementById("dia-semana").textContent = diaSemana.charAt(0).toUpperCase() + diaSemana.slice(1);
+    document.getElementById("dia-mes-ano").textContent = diaMesAno;
+    document.getElementById("hora-min-seg").textContent = horaMinSeg;
+}
+
+// Função para registrar ponto atual
 function registrarPonto(tipo) {
-    if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(
-            position => {
-                const registro = {
-                    data: getCurrentDate(),
-                    hora: getCurrentTime(),
-                    tipo: tipo,
-                    latitude: position.coords.latitude,
-                    longitude: position.coords.longitude
-                };
-                saveRegisterLocalStorage(registro);
-                showNotification(`Ponto de ${tipo} registrado com sucesso para ${registro.data} às ${registro.hora}!`);
-            },
-            error => {
-                showNotification("Erro ao obter localização. Permita o acesso para registrar o ponto.");
-            }
-        );
-    } else {
-        showNotification("Geolocalização não é suportada pelo navegador.");
-    }
-}
-
-// Função para configurar a exibição da data e hora atuais
-function atualizarDataHora() {
-    document.getElementById("dia-semana").textContent = getWeekDay();
-    document.getElementById("dia-mes-ano").textContent = getCurrentDate();
-    document.getElementById("hora-min-seg").textContent = getCurrentTime();
-}
-
-// Configura a data máxima para registros no passado
-function configurarDataMaxima(inputId) {
-    const dataInput = document.getElementById(inputId);
-    dataInput.max = getCurrentDate().split('/').reverse().join('-');
+    const now = new Date();
+    const data = now.toLocaleDateString('pt-BR');
+    const hora = now.toLocaleTimeString('pt-BR');
+    const registers = getRegisterLocalStorage();
+    registers.push({ data, hora, tipo });
+    saveRegisterLocalStorage(registers);
+    showNotification(`Ponto de ${tipo} registrado com sucesso!`);
 }
 
 // Função para registrar ponto no passado
-function registrarPontoPassado() {
-    const data = document.getElementById("data-registro").value;
-    const hora = document.getElementById("hora-registro").value;
-    const tipo = document.getElementById("tipo-registro").value;
+function registrarPontoPassado(event) {
+    event.preventDefault();
+    const data = document.getElementById("data-ponto").value;
+    const hora = document.getElementById("hora-ponto").value;
+    const tipo = document.getElementById("tipo-ponto").value;
 
     if (!data || !hora || !tipo) {
-        showNotification("Por favor, preencha todos os campos!");
+        showNotification("Por favor, preencha todos os campos.");
         return;
     }
 
-    const dataAtual = new Date();
-    const dataRegistro = new Date(`${data}T${hora}`);
+    const dataFormatada = data.split('-').reverse().join('/');
+    const horaFormatada = hora;
 
-    if (dataRegistro > dataAtual) {
-        showNotification("Não é possível registrar pontos no futuro.");
-        return;
-    }
-
-    const registro = {
-        data: data.split('-').reverse().join('/'),
-        hora: hora,
-        tipo: tipo
-    };
-
-    saveRegisterLocalStorage(registro);
-    showNotification(`Ponto de ${tipo} registrado com sucesso para ${registro.data} às ${registro.hora}!`);
+    const registers = getRegisterLocalStorage();
+    registers.push({ data: dataFormatada, hora: horaFormatada, tipo });
+    saveRegisterLocalStorage(registers);
+    showNotification("Ponto registrado com sucesso!");
+    document.getElementById("form-ponto-passado").reset();
 }
 
-// Função para enviar justificativa de ausência
-function enviarJustificativa() {
-    const dataAusencia = document.getElementById("data-ausencia").value;
-    const justificativa = document.getElementById("justificativa").value;
-    const arquivoInput = document.getElementById("arquivo-justificativa");
-    const arquivo = arquivoInput.files[0] ? arquivoInput.files[0].name : null;
+// Função para obter justificativas do localStorage
+function getJustificativasLocalStorage() {
+    const justificativas = localStorage.getItem("justificativas");
+    return justificativas ? JSON.parse(justificativas) : [];
+}
 
-    if (!dataAusencia || !justificativa) {
-        showNotification("Por favor, preencha a data e a justificativa!");
-        return;
-    }
-
-    const dataAtual = new Date();
-    const dataRegistro = new Date(dataAusencia);
-
-    if (dataRegistro > dataAtual) {
-        showNotification("Não é possível justificar uma ausência em uma data futura.");
-        return;
-    }
-
-    const justificativaObj = {
-        dataAusencia: dataAusencia.split('-').reverse().join('/'),
-        justificativa: justificativa,
-        arquivo: arquivo
-    };
-
-    const justificativas = JSON.parse(localStorage.getItem("justificativas") || "[]");
-    justificativas.push(justificativaObj);
+// Função para salvar a justificativa no localStorage
+function salvarJustificativa(dataAusencia, justificativaTexto, nomeArquivo, conteudoArquivo) {
+    const justificativas = getJustificativasLocalStorage();
+    justificativas.push({
+        dataAusencia: formatarDataParaExibicao(dataAusencia),
+        justificativa: justificativaTexto,
+        nomeArquivo: nomeArquivo,
+        conteudoArquivo: conteudoArquivo
+    });
     localStorage.setItem("justificativas", JSON.stringify(justificativas));
-
-    showNotification("Justificativa de ausência registrada com sucesso!");
-    document.getElementById("justificativa").value = "";
-    document.getElementById("data-ausencia").value = "";
-    arquivoInput.value = "";
+    showNotification("Justificativa registrada com sucesso!");
+    document.getElementById("form-justificativa").reset();
 }
 
-// Função para buscar registro para adicionar observação
-function buscarRegistro() {
-    const dataObservacao = document.getElementById("data-observacao").value;
-    const tipoObservacao = document.getElementById("tipo-observacao").value;
+// Função para formatar data de "aaaa-mm-dd" para "dd/mm/aaaa"
+function formatarDataParaExibicao(dataISO) {
+    const [year, month, day] = dataISO.split("-");
+    return `${day}/${month}/${year}`;
+}
 
-    if (!dataObservacao) {
-        showNotification("Por favor, selecione uma data.");
+// Função para registrar justificativa de ausência
+function registrarJustificativa() {
+    const dataAusencia = document.getElementById("data-ausencia").value;
+    const justificativaTexto = document.getElementById("justificativa-texto").value;
+    const arquivoInput = document.getElementById("arquivo-anexo");
+    const arquivo = arquivoInput.files[0];
+
+    if (!dataAusencia || !justificativaTexto) {
+        showNotification("Por favor, preencha todos os campos obrigatórios.");
         return;
     }
 
-    const registros = getRegisterLocalStorage();
-    const registro = registros.find(reg => reg.data === dataObservacao.split('-').reverse().join('/') && reg.tipo === tipoObservacao);
-
-    if (registro) {
-        document.getElementById("detalhes-registro").style.display = "block";
-        document.getElementById("registro-info").textContent = `Registro de ${tipoObservacao} em ${registro.data} às ${registro.hora}`;
+    if (arquivo) {
+        if (arquivo.size > 2 * 1024 * 1024) { // Limite de 2MB
+            showNotification("O arquivo anexado é muito grande. O tamanho máximo permitido é de 2MB.");
+            return;
+        }
+        const reader = new FileReader();
+        reader.onload = function(event) {
+            const arquivoBase64 = event.target.result;
+            salvarJustificativa(dataAusencia, justificativaTexto, arquivo.name, arquivoBase64);
+        };
+        reader.readAsDataURL(arquivo);
     } else {
-        showNotification("Registro não encontrado para a data e tipo selecionados.");
-        document.getElementById("detalhes-registro").style.display = "none";
+        salvarJustificativa(dataAusencia, justificativaTexto, null, null);
     }
 }
 
-// Função para salvar observação no registro
-function salvarObservacao() {
+// Função para adicionar observação a um registro existente
+function adicionarObservacao(event) {
+    event.preventDefault();
     const dataObservacao = document.getElementById("data-observacao").value;
-    const tipoObservacao = document.getElementById("tipo-observacao").value;
-    const observacao = document.getElementById("observacao").value;
+    const horaObservacao = document.getElementById("hora-observacao").value;
+    const observacaoTexto = document.getElementById("observacao-texto").value;
 
-    if (!observacao) {
-        showNotification("Por favor, adicione uma observação.");
+    if (!dataObservacao || !horaObservacao || !observacaoTexto) {
+        showNotification("Por favor, preencha todos os campos.");
         return;
     }
 
-    const registros = getRegisterLocalStorage();
-    const registroIndex = registros.findIndex(reg => reg.data === dataObservacao.split('-').reverse().join('/') && reg.tipo === tipoObservacao);
+    const dataFormatada = dataObservacao.split('-').reverse().join('/');
+    const horaFormatada = horaObservacao;
 
-    if (registroIndex !== -1) {
-        registros[registroIndex].observacao = observacao;
-        localStorage.setItem("register", JSON.stringify(registros));
+    const registers = getRegisterLocalStorage();
+    const registroEncontrado = registers.find(registro => registro.data === dataFormatada && registro.hora === horaFormatada);
+
+    if (registroEncontrado) {
+        registroEncontrado.observacao = observacaoTexto;
+        saveRegisterLocalStorage(registers);
         showNotification("Observação adicionada com sucesso!");
-        document.getElementById("observacao").value = "";
-        document.getElementById("detalhes-registro").style.display = "none";
+        document.getElementById("form-observacao").reset();
     } else {
-        showNotification("Erro ao salvar a observação. Registro não encontrado.");
+        showNotification("Registro não encontrado.");
     }
 }
 
-// Inicialização e eventos de interface
+// Função de inicialização
 function inicializarApp() {
-    atualizarDataHora();
-    setInterval(atualizarDataHora, 1000);
-    configurarDataMaxima("data-registro");
-    configurarDataMaxima("data-ausencia");
-    configurarDataMaxima("data-observacao");
+    // Atualizar data e hora a cada segundo
+    updateDateTime();
+    setInterval(updateDateTime, 1000);
 
+    // Eventos dos botões principais
     document.getElementById("entrada").addEventListener("click", () => registrarPonto("Entrada"));
     document.getElementById("saida").addEventListener("click", () => registrarPonto("Saída"));
     document.getElementById("intervalo").addEventListener("click", () => registrarPonto("Intervalo"));
     document.getElementById("volta-intervalo").addEventListener("click", () => registrarPonto("Volta do Intervalo"));
-    document.getElementById("registrar-passado").addEventListener("click", registrarPontoPassado);
-    document.getElementById("enviar-justificativa").addEventListener("click", enviarJustificativa);
-    document.getElementById("buscar-registro").addEventListener("click", buscarRegistro);
-    document.getElementById("salvar-observacao").addEventListener("click", salvarObservacao);
+
+    // Evento para o formulário de ponto no passado
+    document.getElementById("form-ponto-passado").addEventListener("submit", registrarPontoPassado);
+
+    // Evento para o envio da justificativa
+    document.getElementById("form-justificativa").addEventListener("submit", function(event) {
+        event.preventDefault();
+        registrarJustificativa();
+    });
+
+    // Evento para o formulário de observação
+    document.getElementById("form-observacao").addEventListener("submit", adicionarObservacao);
+
+    // Evento para o botão "Ver Relatório"
+    document.getElementById("ver-relatorio").addEventListener("click", () => {
+        window.location.href = "relatorio.html";
+    });
 }
 
 inicializarApp();

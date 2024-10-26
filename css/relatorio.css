@@ -1,3 +1,4 @@
+/* Estilos Globais */
 body {
     font-family: "Montserrat Alternates", sans-serif;
     font-weight: 400;
@@ -18,10 +19,12 @@ body {
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
 }
 
+/* Títulos */
 h1 {
     text-align: center;
 }
 
+/* Seção de filtros */
 .filter-section {
     margin-bottom: 20px;
     text-align: center;
@@ -37,6 +40,26 @@ h1 {
     font-size: 1em;
 }
 
+/* Estilo para o intervalo de datas personalizado */
+#custom-date-range {
+    margin-top: 10px;
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
+
+.custom-date-field {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.custom-date-field label {
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+/* Seção de registros */
 .date-section {
     margin-bottom: 30px;
 }
@@ -92,6 +115,7 @@ h1 {
     color: white;
 }
 
+/* Notificação */
 #notification {
     position: fixed;
     bottom: 20px;
@@ -136,6 +160,29 @@ h1 {
 
 .justificativa-item strong {
     font-weight: bold;
+}
+
+/* Estilos para imagens nas justificativas */
+.justificativa-item img {
+    display: block;
+    margin-top: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    max-width: 100%;
+    height: auto;
+}
+
+/* Estilos para links de download */
+.justificativa-item a {
+    display: block;
+    margin-top: 10px;
+    color: #d95759;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.justificativa-item a:hover {
+    text-decoration: underline;
 }
 
 /* Botão "Voltar" */
