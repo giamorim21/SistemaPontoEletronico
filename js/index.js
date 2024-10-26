@@ -21,6 +21,10 @@ function getCurrentTime() {
     return `${hours}:${minutes}:${seconds}`;
 }
 
+document.getElementById("ver-relatorio").addEventListener("click", () => {
+    window.location.href = "relatorio.html";
+});
+
 // Funções para manipular localStorage
 function saveRegisterLocalStorage(register) {
     const registerLocalStorage = getRegisterLocalStorage();

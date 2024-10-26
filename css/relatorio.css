@@ -1,0 +1,133 @@
+body {
+    font-family: "Montserrat Alternates", sans-serif;
+    font-weight: 400;
+    font-size: 1.2em;
+    margin: 0;
+    padding: 0;
+    background: url(../imagens/imagem2.jpg) no-repeat center center fixed;
+    background-size: cover;
+    color: #333;
+}
+
+.container {
+    background-color: rgba(255, 255, 255, 0.9);
+    margin: 50px auto;
+    padding: 20px;
+    max-width: 800px;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+h1 {
+    text-align: center;
+}
+
+.filter-section {
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.filter-section label {
+    font-weight: bold;
+    margin-right: 10px;
+}
+
+.filter-section select {
+    padding: 5px 10px;
+    font-size: 1em;
+}
+
+.date-section {
+    margin-bottom: 30px;
+}
+
+.date-section h2 {
+    background-color: #d95759;
+    color: white;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+.records-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.records-table th, .records-table td {
+    padding: 10px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+.records-table th {
+    background-color: rgba(217, 87, 89, 0.8);
+    color: white;
+}
+
+.edit-button, .delete-button {
+    padding: 5px 10px;
+    margin-right: 5px;
+    border: none;
+    border-radius: 5px;
+    font-size: 1em;
+    cursor: pointer;
+}
+
+.edit-button {
+    background-color: rgba(252, 171, 170, 1);
+    color: white;
+}
+
+.edit-button:hover {
+    background-color: rgba(217, 87, 89, 1);
+}
+
+.delete-button {
+    background-color: #ccc;
+    color: #333;
+}
+
+.delete-button:hover {
+    background-color: #999;
+    color: white;
+}
+
+.back-button {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.back-button button {
+    background-color: rgba(217,87,89,255);
+    color: white;
+    font-family: "Montserrat Alternates", sans-serif;
+    font-size: 1em;
+    font-weight: 400;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.back-button button:hover {
+    background-color: rgba(252,171,170,255);
+}
+
+#notification {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    padding: 10px;
+    background-color: rgba(0, 0, 0, 0.8);
+    border-radius: 10px;
+    opacity: 0;
+    transform: translateY(100%);
+    transition: opacity 0.3s, transform 0.3s;
+    color: white;
+}
+
+#notification.show {
+    opacity: 1;
+    transform: translateY(0);
+}
