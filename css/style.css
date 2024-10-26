@@ -72,6 +72,12 @@ button:hover, .form-ponto-passado button:hover, .form-justificativa-ausencia but
     background-color: rgba(252,171,170,255);
 }
 
+#ver-relatorio {
+    width: 100%;
+    max-width: 580px; 
+    margin: 10px auto 0 auto;
+}
+
 /* Notificação */
 #notification {
     position: fixed;
