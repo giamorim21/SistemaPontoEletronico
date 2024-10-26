@@ -1,9 +1,3 @@
-// No final da função initialize(), adicione:
-document.getElementById("voltar").addEventListener("click", () => {
-    window.location.href = "../index.html";
-});
-
-
 // Função para obter registros do localStorage
 function getRegisterLocalStorage() {
     const registers = localStorage.getItem("register");
@@ -24,6 +18,12 @@ function showNotification(message) {
     setTimeout(() => {
         notification.classList.remove("show");
     }, 3000);
+}
+
+// Função para obter justificativas do localStorage
+function getJustificativasLocalStorage() {
+    const justificativas = localStorage.getItem("justificativas");
+    return justificativas ? JSON.parse(justificativas) : [];
 }
 
 // Função para agrupar registros por data
@@ -140,25 +140,58 @@ function renderRecords() {
     }
 }
 
+// Função para renderizar as justificativas na página
+function renderJustificativas() {
+    const justificativas = getJustificativasLocalStorage();
+    const justificativasContainer = document.getElementById("justificativas-container");
+    justificativasContainer.innerHTML = '';
+
+    if (justificativas.length === 0) {
+        justificativasContainer.innerHTML = '<p>Não há justificativas de ausência registradas.</p>';
+        return;
+    }
+
+    justificativas.forEach((justificativa, index) => {
+        const justificativaDiv = document.createElement('div');
+        justificativaDiv.className = 'justificativa-item';
+
+        const dataP = document.createElement('p');
+        dataP.innerHTML = `<strong>Data da Ausência:</strong> ${justificativa.dataAusencia}`;
+        justificativaDiv.appendChild(dataP);
+
+        const descricaoP = document.createElement('p');
+        descricaoP.innerHTML = `<strong>Justificativa:</strong> ${justificativa.justificativa}`;
+        justificativaDiv.appendChild(descricaoP);
+
+        if (justificativa.arquivo) {
+            const arquivoP = document.createElement('p');
+            arquivoP.innerHTML = `<strong>Arquivo Anexado:</strong> ${justificativa.arquivo}`;
+            justificativaDiv.appendChild(arquivoP);
+        }
+
+        justificativasContainer.appendChild(justificativaDiv);
+    });
+}
+
 // Função para editar um registro
 function editRecord(date, index) {
     const records = getRegisterLocalStorage();
-    const filteredRecords = records.filter(record => record.data === date);
-    const record = filteredRecords[index];
+    const recordsOnDate = records.filter(record => record.data === date);
+    const recordToEdit = recordsOnDate[index];
 
-    if (record) {
-        const newHora = prompt('Editar Hora (HH:MM:SS):', record.hora);
+    if (recordToEdit) {
+        const newHora = prompt('Editar Hora (HH:MM:SS):', recordToEdit.hora);
         if (newHora !== null && newHora !== '') {
-            record.hora = newHora;
-            const newTipo = prompt('Editar Tipo:', record.tipo);
+            recordToEdit.hora = newHora;
+            const newTipo = prompt('Editar Tipo:', recordToEdit.tipo);
             if (newTipo !== null && newTipo !== '') {
-                record.tipo = newTipo;
-                const newObservacao = prompt('Editar Observação:', record.observacao || '');
+                recordToEdit.tipo = newTipo;
+                const newObservacao = prompt('Editar Observação:', recordToEdit.observacao || '');
                 if (newObservacao !== null) {
-                    record.observacao = newObservacao;
+                    recordToEdit.observacao = newObservacao;
                     // Atualiza o registro no array original
-                    const recordIndex = records.findIndex(r => r === filteredRecords[index]);
-                    records[recordIndex] = record;
+                    const recordIndex = records.findIndex(r => r === recordToEdit);
+                    records[recordIndex] = recordToEdit;
                     saveRegisterLocalStorage(records);
                     showNotification('Registro editado com sucesso!');
                     renderRecords();
@@ -178,7 +211,13 @@ function deleteRecord() {
 // Função de inicialização
 function initialize() {
     renderRecords();
+    renderJustificativas();
     document.getElementById("filter-period").addEventListener('change', renderRecords);
+
+    // Evento para o botão "Voltar"
+    document.getElementById("voltar").addEventListener("click", () => {
+        window.location.href = "index.html";
+    });
 }
 
 initialize();

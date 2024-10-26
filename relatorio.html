@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
+    <!-- Meta tags e links -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Relatório de Pontos</title>
@@ -9,6 +10,7 @@
 <body>
     <div class="container">
         <h1>Relatório de Registro de Pontos</h1>
+        <!-- Seção de filtros -->
         <div class="filter-section">
             <label for="filter-period">Filtrar por período:</label>
             <select id="filter-period">
@@ -17,14 +19,23 @@
                 <option value="last-month">Último mês</option>
             </select>
         </div>
+        <!-- Contêiner para os registros de ponto -->
         <div id="report-container">
             <!-- Os registros serão listados aqui -->
+        </div>
+        <!-- Seção para as justificativas de ausência -->
+        <div class="justificativas-section">
+            <h2>Justificativas de Ausência</h2>
+            <div id="justificativas-container">
+                <!-- As justificativas serão listadas aqui -->
+            </div>
         </div>
         <!-- Botão para voltar à página principal -->
         <div class="back-button">
             <button id="voltar">Voltar</button>
         </div>
     </div>
+    <!-- Notificações e scripts -->
     <div id="notification">
         <p id="notification-content"></p>
     </div>
