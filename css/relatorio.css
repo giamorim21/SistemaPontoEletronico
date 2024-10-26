@@ -40,6 +40,11 @@ h1 {
     font-size: 1em;
 }
 
+.message-center {
+    text-align: center;
+    margin-top: 20px; /* Opcional: adiciona espaçamento acima */
+}
+
 /* Estilo para o intervalo de datas personalizado */
 #custom-date-range {
     margin-top: 10px;

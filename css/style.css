@@ -74,7 +74,7 @@ button:hover, .form-ponto-passado button:hover, .form-justificativa-ausencia but
 
 #ver-relatorio {
     width: 100%;
-    max-width: 580px; 
+    max-width: 575px; 
     margin: 10px auto 0 auto;
 }
 
@@ -126,7 +126,7 @@ button:hover, .form-ponto-passado button:hover, .form-justificativa-ausencia but
 }
 
 .form-observacao-registro textarea {
-    width: 100%;
+    width: 97.5%;
     padding: 6px;
     font-size: 1em;
     resize: vertical;

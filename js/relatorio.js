@@ -101,13 +101,13 @@ function renderRecords() {
         const startDateInput = document.getElementById("start-date").value;
         const endDateInput = document.getElementById("end-date").value;
         if (!startDateInput || !endDateInput) {
-            reportContainer.innerHTML = '<p>Por favor, selecione a data inicial e a data final.</p>';
+            reportContainer.innerHTML = '<p class="message-center">Por favor, selecione a data inicial e a data final.</p>';
             return;
         }
     }
 
     if (Object.keys(groupedRecords).length === 0) {
-        reportContainer.innerHTML = '<p>Nenhum registro encontrado para o período selecionado.</p>';
+        reportContainer.innerHTML = '<p class="message-center">Nenhum registro encontrado para o período selecionado.</p>';
         return;
     }
 
