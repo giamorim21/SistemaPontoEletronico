@@ -59,6 +59,14 @@ function registrarPontoPassado(event) {
         return;
     }
 
+    const dataHora = new Date(`${data}T${hora}`);
+    const dataHoraAtual = new Date();
+
+    if (dataHora > dataHoraAtual) {
+        showNotification("Não é permitido registrar um ponto no futuro.");
+        return;
+    }
+
     const dataFormatada = data.split('-').reverse().join('/');
     const horaFormatada = hora;
 
@@ -104,6 +112,14 @@ function registrarJustificativa() {
 
     if (!dataAusencia || !justificativaTexto) {
         showNotification("Por favor, preencha todos os campos obrigatórios.");
+        return;
+    }
+
+    const dataAusenciaDate = new Date(dataAusencia);
+    const dataHoraAtual = new Date();
+
+    if (dataAusenciaDate > dataHoraAtual) {
+        showNotification("Não é permitido justificar ausência no futuro.");
         return;
     }
 
