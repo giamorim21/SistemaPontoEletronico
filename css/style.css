@@ -1,3 +1,4 @@
+/* Estilo do corpo */
 body {
     display: flex;
     justify-content: center;
@@ -55,7 +56,7 @@ h2 {
 }
 
 /* Botões e suas variações */
-button, .form-ponto-passado button, .form-justificativa-ausencia button, .form-observacao-registro button, .form-observacao-registro button {
+button, .form-ponto-passado button, .form-justificativa-ausencia button, .form-observacao-registro button {
     background-color: rgba(217,87,89,255);
     color: white;
     font-family: "Montserrat Alternates", sans-serif;
@@ -111,7 +112,7 @@ button:hover, .form-ponto-passado button:hover, .form-justificativa-ausencia but
 /* Inputs e Textarea */
 .form-ponto-passado input, .form-ponto-passado select, .form-justificativa-ausencia input, 
 .form-justificativa-ausencia textarea, .form-observacao-registro input, .form-observacao-registro select, 
-.form-observacao-registro textarea, .form-observacao-registro textarea {
+.form-observacao-registro textarea {
     padding: 8px;
     font-size: 16px;
     margin-bottom: 10px;
@@ -125,6 +126,7 @@ button:hover, .form-ponto-passado button:hover, .form-justificativa-ausencia but
     margin-bottom: 5px;
 }
 
+/* Campo de observação */
 .form-observacao-registro textarea {
     width: 97.5%;
     padding: 6px;
@@ -136,3 +138,57 @@ button:hover, .form-ponto-passado button:hover, .form-justificativa-ausencia but
     box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
 }
 
+/* Estilos para o contêiner do registro */
+.registro-container {
+    background-color: rgba(0, 0, 0, 0.7);
+    color: white;
+    padding: 20px;
+    border-radius: 10px;
+    margin-top: 20px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    width: 100%;
+    max-width: 600px;
+    overflow-y: auto;
+}
+
+/* Estilo para o título do registro */
+.registro-container h3 {
+    font-weight: 700;
+    font-size: 1.2em;
+    margin-bottom: 10px;
+    color: rgba(252, 171, 170, 1);
+}
+
+/* Estilo para cada detalhe do registro */
+.registro-detalhes {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Estilo para o texto dos detalhes */
+.registro-detalhes p {
+    margin: 0;
+    font-weight: bold;
+}
+
+/* Botão para salvar observação */
+#salvar-observacao {
+    background-color: rgba(217, 87, 89, 255);
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    font-family: "Montserrat Alternates", sans-serif;
+    font-size: 1em;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+#salvar-observacao:hover {
+    background-color: rgba(252, 171, 170, 255);
+}
